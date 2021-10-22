@@ -1,3 +1,4 @@
+// 路由守卫登录鉴权还有顶部进度条都在这里处理了。
 import router from './router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -12,6 +13,7 @@ NProgress.configure({ showSpinner: false })
 
 const whiteList = ['/login', '/auth-redirect']
 
+// 设置浏览器标签页的title
 const getPageTitle = (key: string) => {
   const hasKey = i18n.te(`route.${key}`)
   if (hasKey) {
@@ -42,6 +44,7 @@ router.beforeEach(async(to: Route, _: Route, next: any) => {
           PermissionModule.GenerateRoutes(roles)
           // Dynamically add accessible routes
           PermissionModule.dynamicRoutes.forEach(route => {
+            // 动态路由
             router.addRoute(route)
           })
           // Hack: ensure addRoutes is complete
