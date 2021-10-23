@@ -1,27 +1,24 @@
 <template>
-  <el-breadcrumb
-    class="app-breadcrumb"
-    separator="/"
-  >
+  <el-breadcrumb class="app-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
-      <el-breadcrumb-item
-        v-for="(item, index) in breadcrumbs"
-        :key="item.path"
-      >
+      <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.path">
         <span
-          v-if="item.redirect === 'noredirect' || index === breadcrumbs.length-1"
+          v-if="
+            item.redirect === 'noredirect' || index === breadcrumbs.length - 1
+          "
           class="no-redirect"
-        >{{ $t('route.' + item.meta.title) }}</span>
-        <a
-          v-else
-          @click.prevent="handleLink(item)"
-        >{{ $t('route.' + item.meta.title) }}</a>
+          >{{ $t("route." + item.meta.title) }}</span
+        >
+        <a v-else @click.prevent="handleLink(item)">{{
+          $t("route." + item.meta.title)
+        }}</a>
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
 </template>
 
 <script lang="ts">
+import { method } from 'lodash'
 import { compile } from 'path-to-regexp'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { RouteRecord, Route } from 'vue-router'
@@ -30,7 +27,7 @@ import { RouteRecord, Route } from 'vue-router'
   name: 'Breadcrumb'
 })
 export default class extends Vue {
-  private breadcrumbs: RouteRecord[] = []
+  private breadcrumbs: RouteRecord[] = [];
 
   @Watch('$route')
   private onRouteChange(route: Route) {
@@ -46,14 +43,21 @@ export default class extends Vue {
   }
 
   private getBreadcrumb() {
-    let matched = this.$route.matched.filter((item) => item.meta && item.meta.title)
+    let matched = this.$route.matched.filter(
+      item => item.meta && item.meta.title
+    )
+
     const first = matched[0]
     if (!this.isDashboard(first)) {
-      matched = [{ path: '/dashboard', meta: { title: 'dashboard' } } as RouteRecord].concat(matched)
+      matched = [
+        { path: '/dashboard', meta: { title: 'dashboard' } } as RouteRecord
+      ].concat(matched)
     }
-    this.breadcrumbs = matched.filter((item) => {
+    this.breadcrumbs = matched.filter(item => {
       return item.meta && item.meta.title && item.meta.breadcrumb !== false
     })
+
+    console.warn('router', this.breadcrumbs)
   }
 
   private isDashboard(route: RouteRecord) {
@@ -72,6 +76,7 @@ export default class extends Vue {
   }
 
   private handleLink(item: any) {
+    console.warn('item', item)
     const { redirect, path } = item
     if (redirect) {
       this.$router.push(redirect).catch(err => {
